@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-[family-name:var(--font-geist-sans)] bg-slate-100 text-slate-900;
+}
+
+button {
+  @apply bg-blue-500 rounded-lg px-6 py-2 text-blue-50 w-fit font-medium;
+}
+
+textarea,
+input {
+  @apply border border-slate-300 focus:border-slate-500 outline-none p-2 rounded-lg;
+}
+
+textarea {
+  @apply resize-none h-[400px];
+}
+
+.content-wrapper {
+  @apply border bg-white flex flex-col gap-4 p-4 rounded-2xl w-full overflow-y-auto;
+}
+
+.input-wrapper {
+  @apply flex flex-col gap-2 w-full;
+}
