@@ -3,6 +3,7 @@ import { FieldError, UseFormRegister } from "react-hook-form";
 interface FormValues {
   promptTemplate: string;
   keywords: string;
+  delayTime: number;
 }
 
 interface TextareaFieldProps {
@@ -11,10 +12,11 @@ interface TextareaFieldProps {
   register: UseFormRegister<FormValues>;
   errorMessage?: FieldError | undefined;
   disabled: boolean;
-  defaultValue?: string;
+  defaultValue?: string | number;
   required?: boolean;
   placeholder?: string;
   extraLabel?: React.ReactNode; // Para añadir elementos extra en el label
+  isTextarea?: boolean;
 }
 
 export default function TextareaField({
@@ -27,6 +29,7 @@ export default function TextareaField({
   extraLabel,
   required = false,
   placeholder = "",
+  isTextarea,
 }: TextareaFieldProps) {
   return (
     <div className="input-wrapper">
@@ -38,14 +41,27 @@ export default function TextareaField({
           </pre>
         )}
       </label>
-      <textarea
-        {...register(id)}
-        id={id}
-        disabled={disabled}
-        defaultValue={defaultValue}
-        required={required}
-        placeholder={placeholder}
-      ></textarea>
+      {isTextarea ? (
+        <textarea
+          {...register(id)}
+          id={id}
+          disabled={disabled}
+          defaultValue={defaultValue}
+          required={required}
+          placeholder={placeholder}
+        />
+      ) : (
+        <input
+          {...register(id, { valueAsNumber: true })}
+          type="number"
+          id={id}
+          disabled={disabled}
+          defaultValue={defaultValue}
+          required={required}
+          placeholder={placeholder}
+        />
+      )}
+
       {errorMessage && (
         <span className="font-light text-sm text-red-800 pl-1">
           {errorMessage.message}

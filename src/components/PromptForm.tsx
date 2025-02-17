@@ -29,6 +29,10 @@ const formSchema = z.object({
       /^[^<>&"]*$/,
       "Las Keywords no pueden contener caracteres especiales"
     ),
+  delayTime: z
+    .number()
+    .int("El valor debe ser un número entero") // Asegura que no sea flotante
+    .min(6000, "El tiempo mínimo permitido es 6000 ms"), // Mínimo 5000ms
 });
 
 //Se infiere el tipo  de formSchema
@@ -44,6 +48,7 @@ export default function PromptForm() {
 
   const promptTemplate = watch("promptTemplate");
   const keywords = watch("keywords");
+  const delayTime = watch("delayTime");
 
   const [time, setTime] = useState(0);
   const [timer, setTimer] = useState(false);
@@ -77,6 +82,7 @@ export default function PromptForm() {
     setIsSending(false);
     setMessageResult("Cancelando...");
   };
+
   const onSubmit = async () => {
     cancelRequested.current = false;
     clearArticles();
@@ -87,7 +93,7 @@ export default function PromptForm() {
     setIsSending(true);
     try {
       const articlesResponse = prompts.map(async (prompt, index) => {
-        await delay(4000 * index);
+        await delay(delayTime * index);
         if (cancelRequested.current) throw new Error("Cancelado");
         const article = await generateContent(prompt, apikey);
         if (cancelRequested.current) throw new Error("Cancelado");
@@ -147,6 +153,7 @@ export default function PromptForm() {
             id="promptTemplate"
             label="Plantilla del prompt"
             register={register}
+            isTextarea
             disabled={isSending || !apikey}
             defaultValue={configSite.defaultPrompt}
             errorMessage={errors.promptTemplate}
@@ -157,8 +164,20 @@ export default function PromptForm() {
             label="Palabras clave -"
             extraLabel="keyword"
             register={register}
+            isTextarea
             disabled={isSending || !apikey}
             errorMessage={errors.keywords}
+            required
+          />
+        </div>
+        <div>
+          <TextareaField
+            id="delayTime"
+            label="Delay (ms)"
+            defaultValue={6000}
+            register={register}
+            disabled={isSending || !apikey}
+            errorMessage={errors.delayTime}
             required
           />
         </div>
